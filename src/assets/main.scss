@@ -1,0 +1,8 @@
+@import 'base.scss';
+@import 'fonts.scss';
+@import 'colors.scss';
+
+body{
+    @include set-font-family(primary);
+    @include set-font-size(t-md,regular);
+}
