@@ -15,17 +15,26 @@
           <form class="login-form" @submit.prevent>
             <InputDefault
               class="login-form__input"
+              :is-error="vLogin.email.$error"
+              :err-message="loginFormErrors?.email"
               placeholder="E-mail"
               type="email"
-              @change-value="setEmail"
+              @change-value="loginForm.email = $event"
             />
             <InputDefault
               class="login-form__input"
+              :is-error="vLogin.password.$error"
+              :err-message="loginFormErrors?.password"
               placeholder="Пароль"
               type="password"
-              @change-value="setPassword"
+              @change-value="loginForm.password = $event"
             />
-            <ButtonDefault text="Войти" :loading="isLoading" :disabled="isLoading" @click-detected="login" />
+            <ButtonDefault
+              text="Войти"
+              :loading="isLoading"
+              :disabled="isLoading"
+              @click-detected="handleSubmitFormLogin"
+            />
             <p class="login-form__other-type">
               У вас нет аккаунта ?
               <a class="login-form__other-link" href="#" @click.prevent="changeForm('register')"
@@ -46,30 +55,43 @@
           </picture>
           <form class="login-form" @submit.prevent>
             <InputDefault
+              :is-error="vRegister.name.$error"
+              :err-message="registerFormErrors?.name"
               class="login-form__input"
               placeholder="Имя"
               type="text"
-              @change-value="setName"
+              @change-value="registerForm.name = $event"
             />
             <InputDefault
+              :is-error="vRegister.email.$error"
+              :err-message="registerFormErrors?.email"
               class="login-form__input"
               placeholder="E-mail"
               type="email"
-              @change-value="setEmail"
+              @change-value="registerForm.email = $event"
             />
             <InputDefault
+              :is-error="vRegister.password.$error"
+              :err-message="registerFormErrors?.password"
               class="login-form__input"
               placeholder="Пароль"
               type="password"
-              @change-value="setPassword"
+              @change-value="registerForm.password = $event"
             />
             <InputDefault
+              :is-error="vRegister.confirmPassword.$error"
+              :err-message="registerFormErrors?.confirmPassword"
               class="login-form__input"
               placeholder="Повторить пароль"
               type="password"
-              @change-value="setPassword2"
+              @change-value="registerForm.confirmPassword = $event"
             />
-            <ButtonDefault text="Регистрация" :loading="isLoading" :disabled="isLoading" @click-detected="register" />
+            <ButtonDefault
+              text="Регистрация"
+              :loading="isLoading"
+              :disabled="isLoading"
+              @click-detected="handleSubmitFormRegister"
+            />
             <p class="login-form__other-type">
               У вас уже есть аккаунт ?
               <a class="login-form__other-link" href="#" @click.prevent="changeForm('login')"
@@ -88,21 +110,68 @@ import { computed, ref } from 'vue'
 import router from '@/router/index'
 import { supabase } from '@/lib/supabaseClient.js'
 import { useAuthStore } from '@/stores/auth.ts'
+import { useToastsStore } from '@/stores/toasts'
 import InputDefault from '@/components/common/InputDefault.vue'
 import ButtonDefault from '@/components/common/ButtonDefault.vue'
 import Container from '@/components/common/Container.vue'
-import { useToastsStore } from '@/stores/toasts'
-
-const typeLogin = ref('login')
-
-const email = ref('')
-const password = ref('')
-const password2 = ref('')
-const name = ref('')
-const loading = ref(false)
+import useFormValidation from '@/composables/useFormValidation'
+import { helpers, required, email, minLength, sameAs } from '@vuelidate/validators'
 
 const authStore = useAuthStore()
 const toastsStore = useToastsStore()
+
+const typeLogin = ref('login')
+const loading = ref(false)
+
+const {
+  form: loginForm,
+  v$: vLogin,
+  validateForm: validateFormLogin,
+  errors: loginFormErrors
+} = useFormValidation(
+  {
+    email: '',
+    password: ''
+  },
+  {
+    email: { required: helpers.withMessage('Поле email обязательно', required) },
+    password: {
+      required: helpers.withMessage('Поле пароль обязательно', required),
+      minLength: helpers.withMessage('Минимальная длинна 8', minLength(8))
+    }
+  }
+)
+
+const {
+  form: registerForm,
+  v$: vRegister,
+  validateForm: validateFormRegister,
+  errors: registerFormErrors
+} = useFormValidation(
+  {
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  },
+  {
+    email: { required: helpers.withMessage('Поле email обязательно', required) },
+    name: { minLength: helpers.withMessage('Минимальная длинна 2', minLength(2)) },
+    password: {
+      required: helpers.withMessage('Введите пароль', required),
+      minLength: helpers.withMessage('Минимальная длинна 8', minLength(8))
+    },
+    confirmPassword: {
+      required: helpers.withMessage('Введите проверочный пароль', required),
+      sameAsPassword: helpers.withMessage(
+        'Пароли не совпадают',
+        (value, form) => {
+          return value === form.password;
+        }
+      )
+    }
+  }
+)
 
 const isLogin = computed(() => {
   return typeLogin.value === 'login'
@@ -115,27 +184,21 @@ const isLoading = computed(() => {
   return loading.value
 })
 
-function setEmail(v) {
-  email.value = v
+const handleSubmitFormLogin = () => {
+  if (validateFormLogin()) {
+    login()
+  }
 }
-
-function setPassword(v) {
-  password.value = v
-}
-
-function setPassword2(v) {
-  password2.value = v
-}
-
-function setName(v) {
-  name.value = v
+const handleSubmitFormRegister = () => {
+  if (validateFormRegister()) {
+    register()
+  }
 }
 
 function changeForm(name) {
-  if(!isLoading.value){
+  if (!isLoading.value) {
     typeLogin.value = name
   }
-
 }
 
 async function translateAndShowError(error) {
@@ -148,20 +211,19 @@ async function translateAndShowError(error) {
   await toastsStore.addToast({
     message: translations[error.message],
     type: 'error',
-    timeout:3000,
+    timeout: 3000
   })
 }
 
 async function successForm() {
   const typeMessage = {
-    'login': 'Вы успешно авторизованы!',
-    'register': 'Регистрация прошла успешно!'
-
+    login: 'Вы успешно авторизованы!',
+    register: 'Регистрация прошла успешно!'
   }
   await toastsStore.addToast({
     message: typeMessage[typeLogin.value],
     type: 'success',
-    timeout:3000,
+    timeout: 3000
   })
   setTimeout(async () => {
     await authStore.checkLogin()
@@ -171,9 +233,9 @@ async function successForm() {
 
 async function login() {
   loading.value = true
-  const {error } = await supabase.auth.signInWithPassword({
-    email: email.value,
-    password: password.value
+  const error = authStore.login({
+    email:loginForm.email,
+    password:loginForm.password,
   })
   if (error) {
     loading.value = false
@@ -186,14 +248,10 @@ async function login() {
 
 async function register() {
   loading.value = true
-  const { error } = await supabase.auth.signUp({
-    email: email.value,
-    password: password.value,
-    options: {
-      data: {
-        first_name: name.value
-      }
-    }
+  const error = authStore.register({
+    email:registerForm.email,
+    password:registerForm.password,
+    name: registerForm.name
   })
   if (error) {
     loading.value = false
@@ -204,7 +262,6 @@ async function register() {
   }
 }
 </script>
-
 
 <style scoped lang="scss">
 .login-page {
@@ -264,7 +321,8 @@ async function register() {
   transition: opacity 0.5s ease;
 }
 
-.fade-enter, .fade-leave-to  {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

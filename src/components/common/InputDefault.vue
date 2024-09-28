@@ -1,11 +1,19 @@
 <script setup>
 import { computed, defineProps, ref, watch } from "vue";
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['changeValue'])
 
 const props = defineProps({
   placeholder: String,
   type:String,
+  isError:{
+    type: Boolean,
+    default: false
+  },
+  errMessage:{
+    type: String,
+    default: ""
+  },
   modelValue: {
     type: String,
     default: ""
@@ -23,7 +31,7 @@ const isAnimate = computed(()=>{
 })
 
 watch(value, (newValue) => {
-  emit("update:modelValue", newValue);
+  emit("changeValue", newValue);
 });
 
 // Watch для синхронизации с modelValue, если он изменится извне
@@ -33,16 +41,21 @@ watch(() => props.modelValue, (newValue) => {
 </script>
 
 <template>
-  <label class="input-default" >
-    <span class="input-default__placeholder" :class="{animate:isAnimate}">{{props.placeholder}}</span>
-    <input class="input-default__input" :class="{animate:isAnimate}"  :type="props.type" v-model="value" :disabled="props.disabled">
-  </label>
 
+  <div class="input-wrapper">
+    <label class="input-default" >
+      <span class="input-default__placeholder" :class="{animate:isAnimate}">{{props.placeholder}}</span>
+      <input class="input-default__input" :class="{animate:isAnimate, error:isError}"  :type="props.type" v-model="value" :disabled="props.disabled">
+    </label>
+    <p class="input-error" v-if="errMessage.length">{{errMessage}}</p>
+  </div>
 </template>
 
 <style lang="scss">
 .input-default{
+  display: inline-block;
   width: 100%;
+  height: 100%;
   position: relative;
 
   &__placeholder{
@@ -64,6 +77,14 @@ watch(() => props.modelValue, (newValue) => {
     border: 1px solid $gray-300;
     border-radius: 8px;
 
+    &.animate{
+      padding: 16px  14px 6px ;
+    }
+
+    &.error{
+      border: 1px solid red;
+    }
+
     @include set-font-size(t-md,regular)
   }
 
@@ -71,10 +92,6 @@ watch(() => props.modelValue, (newValue) => {
     top: 2px;
     transform: translateY(0);
     @include set-font-size(t-xs,regular);
-  }
-
-  &__input.animate{
-    padding: 16px  14px 6px ;
   }
 }
 </style>
