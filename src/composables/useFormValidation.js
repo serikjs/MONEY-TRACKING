@@ -1,10 +1,26 @@
 import { ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import {email ,helpers} from '@vuelidate/validators'
+import { email, helpers, minLength, required } from "@vuelidate/validators";
 
 const defaultValidationRules = {
   email: {
     email: helpers.withMessage('Email введен неверно ',email)
+  },
+  name:{
+    minLength: helpers.withMessage('Минимальная длинна 2', minLength(2))
+  },
+  password:{
+    required: helpers.withMessage('Поле пароль обязательно', required),
+    minLength: helpers.withMessage('Минимальная длинна 8', minLength(8))
+  },
+  confirmPassword:{
+    required: helpers.withMessage('Введите проверочный пароль', required),
+    sameAsPassword: helpers.withMessage(
+      'Пароли не совпадают',
+      (value, form) => {
+        return value === form.password;
+      }
+    )
   }
 }
 

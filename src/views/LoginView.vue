@@ -135,10 +135,6 @@ const {
   },
   {
     email: { required: helpers.withMessage('Поле email обязательно', required) },
-    password: {
-      required: helpers.withMessage('Поле пароль обязательно', required),
-      minLength: helpers.withMessage('Минимальная длинна 8', minLength(8))
-    }
   }
 )
 
@@ -156,20 +152,6 @@ const {
   },
   {
     email: { required: helpers.withMessage('Поле email обязательно', required) },
-    name: { minLength: helpers.withMessage('Минимальная длинна 2', minLength(2)) },
-    password: {
-      required: helpers.withMessage('Введите пароль', required),
-      minLength: helpers.withMessage('Минимальная длинна 8', minLength(8))
-    },
-    confirmPassword: {
-      required: helpers.withMessage('Введите проверочный пароль', required),
-      sameAsPassword: helpers.withMessage(
-        'Пароли не совпадают',
-        (value, form) => {
-          return value === form.password;
-        }
-      )
-    }
   }
 )
 

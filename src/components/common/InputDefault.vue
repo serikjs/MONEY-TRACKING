@@ -75,6 +75,8 @@ watch(() => props.modelValue, (newValue) => {
     height: 44px;
     padding: 10px 14px;
     border: 1px solid $gray-300;
+    color: $gray-900;
+    @include set-font-size(t-md,regular);
     border-radius: 8px;
 
     &.animate{
@@ -82,10 +84,8 @@ watch(() => props.modelValue, (newValue) => {
     }
 
     &.error{
-      border: 1px solid red;
+      border: 1px solid $error-300;
     }
-
-    @include set-font-size(t-md,regular)
   }
 
   &__placeholder.animate{
@@ -93,5 +93,10 @@ watch(() => props.modelValue, (newValue) => {
     transform: translateY(0);
     @include set-font-size(t-xs,regular);
   }
+}
+.input-error{
+  margin-top: 6px;
+  color: $error-500;
+  @include set-font-size(t-sm,regular);
 }
 </style>
