@@ -108,14 +108,13 @@
 <script setup>
 import { computed, ref } from 'vue'
 import router from '@/router/index'
-import { supabase } from '@/lib/supabaseClient.js'
 import { useAuthStore } from '@/stores/auth.ts'
 import { useToastsStore } from '@/stores/toasts'
 import InputDefault from '@/components/common/InputDefault.vue'
 import ButtonDefault from '@/components/common/ButtonDefault.vue'
 import Container from '@/components/common/Container.vue'
 import useFormValidation from '@/composables/useFormValidation'
-import { helpers, required, email, minLength, sameAs } from '@vuelidate/validators'
+import { helpers, required} from '@vuelidate/validators'
 
 const authStore = useAuthStore()
 const toastsStore = useToastsStore()
