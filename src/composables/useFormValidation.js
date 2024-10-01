@@ -24,13 +24,16 @@ const defaultValidationRules = {
   }
 }
 
-const mergeValidationRules = (defaultRules, customRules) => {
-  const merged = { ...defaultRules };
+const mergeValidationRules = (defaultRules, customRules, form) => {
+  const merged = {};
 
-  for (const key in customRules) {
-    if (merged[key]) {
-      merged[key] = { ...merged[key], ...customRules[key] };
-    } else {
+  // Пройдемся по полям формы
+  for (const key in form.value) {
+    if (defaultRules[key]) {
+      // Объединяем дефолтные и пользовательские правила
+      merged[key] = { ...defaultRules[key], ...(customRules[key] || {}) };
+    } else if (customRules[key]) {
+      // Если есть только пользовательские правила
       merged[key] = customRules[key];
     }
   }
@@ -43,7 +46,7 @@ export default function useFormValidation(initialData, validationSchema) {
   const isSubmitting = ref(false)
   const errors = ref(null)
 
-  const mergedValidationSchema = mergeValidationRules(defaultValidationRules,validationSchema)
+  const mergedValidationSchema = mergeValidationRules(defaultValidationRules,validationSchema,form)
 
   // Подключаем Vuelidate без автоматического трекинга
   const v$ = useVuelidate(mergedValidationSchema, form, { $autoDirty: false, $lazy: true })
@@ -51,6 +54,7 @@ export default function useFormValidation(initialData, validationSchema) {
   const validateForm = () => {
     isSubmitting.value = true
     v$.value.$touch() // Явный вызов валидации только при отправке формы
+
     if(v$.value.$invalid){
       errors.value = collectErrors(v$.value.$errors)
     }

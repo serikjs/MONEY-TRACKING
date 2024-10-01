@@ -6,25 +6,25 @@
           <h2 class="login-page__title">Войти</h2>
           <picture>
             <source
-              srcset="@/assets/img/login.webp 1x, @/assets/img/login-2x.webp 2x"
+              srcset="../assets/img/login.webp 1x, @/assets/img/login-2x.webp 2x"
               type="image/webp"
             />
-            <source srcset="@/assets/img/login.png 1x, @/assets/img/login-2x.png 2x" />
-            <img class="login-page__img" src="@/assets/img/login.png" alt="Картинка входа" />
+            <source srcset="../assets/img/login.png 1x, @/assets/img/login-2x.png 2x" />
+            <img class="login-page__img" src="../assets/img/login.png" alt="Картинка входа" />
           </picture>
           <form class="login-form" @submit.prevent>
             <InputDefault
               class="login-form__input"
-              :is-error="vLogin.email.$error"
-              :err-message="loginFormErrors?.email"
+              :is-error="hasInputError(vLogin,'email')"
+              :err-message="getErrorInputMessage(loginFormErrors,'email')"
               placeholder="E-mail"
               type="email"
               @change-value="loginForm.email = $event"
             />
             <InputDefault
               class="login-form__input"
-              :is-error="vLogin.password.$error"
-              :err-message="loginFormErrors?.password"
+              :is-error="hasInputError(vLogin,'password')"
+              :err-message="getErrorInputMessage(loginFormErrors,'password')"
               placeholder="Пароль"
               type="password"
               @change-value="loginForm.password = $event"
@@ -47,40 +47,40 @@
           <h2 class="login-page__title">Регистрация</h2>
           <picture>
             <source
-              srcset="@/assets/img/login.webp 1x, @/assets/img/login-2x.webp 2x"
+              srcset="../assets/img/login.webp 1x, @/assets/img/login-2x.webp 2x"
               type="image/webp"
             />
-            <source srcset="@/assets/img/login.png 1x, @/assets/img/login-2x.png 2x" />
-            <img class="login-page__img" src="@/assets/img/login.png" alt="Картинка входа" />
+            <source srcset="../assets/img/login.png 1x, @/assets/img/login-2x.png 2x" />
+            <img class="login-page__img" src="../assets/img/login.png" alt="Картинка входа" />
           </picture>
           <form class="login-form" @submit.prevent>
             <InputDefault
-              :is-error="vRegister.name.$error"
-              :err-message="registerFormErrors?.name"
+              :is-error="hasInputError(vRegister,'name')"
+              :err-message="getErrorInputMessage(registerFormErrors,'name')"
               class="login-form__input"
               placeholder="Имя"
               type="text"
               @change-value="registerForm.name = $event"
             />
             <InputDefault
-              :is-error="vRegister.email.$error"
-              :err-message="registerFormErrors?.email"
+              :is-error="hasInputError(vRegister,'email')"
+              :err-message="getErrorInputMessage(registerFormErrors,'email')"
               class="login-form__input"
               placeholder="E-mail"
               type="email"
               @change-value="registerForm.email = $event"
             />
             <InputDefault
-              :is-error="vRegister.password.$error"
-              :err-message="registerFormErrors?.password"
+              :is-error="hasInputError(vRegister,'password')"
+              :err-message="getErrorInputMessage(registerFormErrors,'password')"
               class="login-form__input"
               placeholder="Пароль"
               type="password"
               @change-value="registerForm.password = $event"
             />
             <InputDefault
-              :is-error="vRegister.confirmPassword.$error"
-              :err-message="registerFormErrors?.confirmPassword"
+              :is-error="hasInputError(vRegister,'confirmPassword')"
+              :err-message="getErrorInputMessage(registerFormErrors,'confirmPassword')"
               class="login-form__input"
               placeholder="Повторить пароль"
               type="password"
@@ -107,14 +107,18 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import router from '@/router/index'
-import { useAuthStore } from '@/stores/auth.ts'
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth'
 import { useToastsStore } from '@/stores/toasts'
 import InputDefault from '@/components/common/InputDefault.vue'
 import ButtonDefault from '@/components/common/ButtonDefault.vue'
 import Container from '@/components/common/Container.vue'
-import useFormValidation from '@/composables/useFormValidation'
+import useFormValidation from '@/composables/useFormValidation.js'
 import { helpers, required} from '@vuelidate/validators'
+
+
+
+const router = useRouter();
 
 const authStore = useAuthStore()
 const toastsStore = useToastsStore()
@@ -165,6 +169,9 @@ const isLoading = computed(() => {
   return loading.value
 })
 
+const hasInputError = (form,field) => form[field]?.$error;
+const getErrorInputMessage  = (form,field) => form?.[field];
+
 const handleSubmitFormLogin = () => {
   if (validateFormLogin()) {
     login()
@@ -176,13 +183,14 @@ const handleSubmitFormRegister = () => {
   }
 }
 
-function changeForm(name) {
+const  changeForm = (name)=> {
   if (!isLoading.value) {
     typeLogin.value = name
   }
 }
 
-async function translateAndShowError(error) {
+ const translateAndShowError = async (error) => {
+   console.log("error",error);
   const translations = {
     'Invalid login credentials': 'Неверные учетные данные',
     'User already registered': 'Пользователь уже зарегистрирован',
@@ -196,7 +204,7 @@ async function translateAndShowError(error) {
   })
 }
 
-async function successForm() {
+ const successForm = async()=> {
   const typeMessage = {
     login: 'Вы успешно авторизованы!',
     register: 'Регистрация прошла успешно!'
@@ -206,17 +214,17 @@ async function successForm() {
     type: 'success',
     timeout: 3000
   })
+   await authStore.checkLogin()
   setTimeout(async () => {
-    await authStore.checkLogin()
     await router.push('/')
   }, 2000)
 }
 
-async function login() {
+ const login = async() => {
   loading.value = true
-  const error = authStore.login({
-    email:loginForm.email,
-    password:loginForm.password,
+  const error = await authStore.login({
+    email:loginForm.value.email,
+    password:loginForm.value.password,
   })
   if (error) {
     loading.value = false
@@ -227,12 +235,12 @@ async function login() {
   }
 }
 
-async function register() {
+ const register = async() => {
   loading.value = true
-  const error = authStore.register({
-    email:registerForm.email,
-    password:registerForm.password,
-    name: registerForm.name
+  const error = await authStore.register({
+    email:registerForm.value.email,
+    password:registerForm.value.password,
+    name: registerForm.value.name
   })
   if (error) {
     loading.value = false
