@@ -6,6 +6,7 @@ const emit = defineEmits(['changeValue'])
 const props = defineProps({
   placeholder: String,
   type:String,
+  name:String,
   isError:{
     type: Boolean,
     default: false
@@ -21,6 +22,10 @@ const props = defineProps({
   disabled:{
     type: Boolean,
     default: false
+  },
+  autocomplete:{
+    type: String,
+    default: "off"
   }
 });
 
@@ -45,7 +50,7 @@ watch(() => props.modelValue, (newValue) => {
   <div class="input-wrapper">
     <label class="input-default" >
       <span class="input-default__placeholder" :class="{animate:isAnimate}">{{props.placeholder}}</span>
-      <input class="input-default__input" :class="{animate:isAnimate, error:isError}"  :type="props.type" v-model="value" :disabled="props.disabled">
+      <input class="input-default__input" :autocomplete="autocomplete" :name="name" :class="{animate:isAnimate, error:isError}"  :type="props.type" v-model="value" :disabled="props.disabled">
     </label>
     <p class="input-error" v-if="errMessage.length">{{errMessage}}</p>
   </div>

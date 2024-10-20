@@ -14,6 +14,8 @@
           </picture>
           <form class="login-form" @submit.prevent>
             <InputDefault
+              name="email"
+              autocomplete="email"
               class="login-form__input"
               :is-error="hasInputError(vLogin,'email')"
               :err-message="getErrorInputMessage(loginFormErrors,'email')"
@@ -22,6 +24,7 @@
               @change-value="loginForm.email = $event"
             />
             <InputDefault
+              name="password"
               class="login-form__input"
               :is-error="hasInputError(vLogin,'password')"
               :err-message="getErrorInputMessage(loginFormErrors,'password')"
@@ -35,6 +38,9 @@
               :disabled="isLoading"
               @click-detected="handleSubmitFormLogin"
             />
+            <a class="login-form__other-type" @click="authStore.loginGoogle">
+              Google
+            </a>
             <p class="login-form__other-type">
               У вас нет аккаунта ?
               <a class="login-form__other-link" href="#" @click.prevent="changeForm('register')"
@@ -55,6 +61,8 @@
           </picture>
           <form class="login-form" @submit.prevent>
             <InputDefault
+              name="name"
+              autocomplete="given-name"
               :is-error="hasInputError(vRegister,'name')"
               :err-message="getErrorInputMessage(registerFormErrors,'name')"
               class="login-form__input"
@@ -63,6 +71,8 @@
               @change-value="registerForm.name = $event"
             />
             <InputDefault
+              name="email"
+              autocomplete="email"
               :is-error="hasInputError(vRegister,'email')"
               :err-message="getErrorInputMessage(registerFormErrors,'email')"
               class="login-form__input"
@@ -71,6 +81,7 @@
               @change-value="registerForm.email = $event"
             />
             <InputDefault
+              name="password"
               :is-error="hasInputError(vRegister,'password')"
               :err-message="getErrorInputMessage(registerFormErrors,'password')"
               class="login-form__input"
@@ -79,6 +90,7 @@
               @change-value="registerForm.password = $event"
             />
             <InputDefault
+              name="second-password"
               :is-error="hasInputError(vRegister,'confirmPassword')"
               :err-message="getErrorInputMessage(registerFormErrors,'confirmPassword')"
               class="login-form__input"
@@ -215,9 +227,9 @@ const  changeForm = (name)=> {
     timeout: 3000
   })
    await authStore.checkLogin()
-  setTimeout(async () => {
-    await router.push('/')
-  }, 2000)
+  // setTimeout(async () => {
+  //   await router.push('/')
+  // }, 2000)
 }
 
  const login = async() => {
