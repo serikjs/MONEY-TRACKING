@@ -1,12 +1,12 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from '@/lib/supabaseClient.js'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(null)
   const getToken = computed(() => token.value)
 
-  function setToken(val = null) {
+  function setToken(val: any = null) {
     if (val) {
       token.value = val.access_token
     } else {
@@ -19,31 +19,40 @@ export const useAuthStore = defineStore('auth', () => {
     if (session.data.session) {
       setToken(session.data.session)
     } else {
-      setToken()
+      setToken(null)
     }
   }
 
   async function login(data:any) {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password
-    })
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password
+      })
+      return error
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
 
-    return error
   }
 
   async function register(data:any) {
-    const { error } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        data: {
-          first_name: data.name
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            first_name: data.name
+          }
         }
-      }
-    })
+      })
 
-    return error
+      return error
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+
   }
 
   return { token, getToken, setToken, checkLogin,login,register }
