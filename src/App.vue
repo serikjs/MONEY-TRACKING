@@ -1,8 +1,5 @@
 <template>
-  <nav>
-    <button v-if="authStore.getToken" @click="logout">Logout</button>
-  </nav>
-  <Toasts />
+  <ToastsDefault/>
   <RouterView />
 </template>
 
@@ -11,15 +8,10 @@ import { useAuthStore } from '@/stores/auth'
 import router from '@/router/index'
 import { supabase } from '@/lib/supabaseClient.js'
 import { onMounted, onUpdated } from 'vue'
-import Toasts from '@/components/common/Toasts.vue'
+import Toasts from '@/components/common/ToastsDefault.vue'
+import ToastsDefault from "@/components/common/ToastsDefault.vue";
 
 const authStore = useAuthStore()
-
-async function logout() {
-  const { error } = await supabase.auth.signOut()
-  authStore.setToken()
-  await router.push('/login')
-}
 
 onUpdated(() => {
   authStore.checkLogin()
