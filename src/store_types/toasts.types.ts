@@ -1,10 +1,13 @@
-export interface ToastsState {
-  toasts: Toast[];
-}
 
 export interface Toast {
-  id: String;
-  message: String;
-  type: String;
-  timeout: Number;
+  id: string;
+  message: string;
+  type: ToastType;
+  timeout: number;
+}
+
+export enum ToastType {
+  success,
+  error,
+  info
 }

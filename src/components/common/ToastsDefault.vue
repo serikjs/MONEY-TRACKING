@@ -3,9 +3,9 @@
     <transition-group class="toasts-list" name="toast-list" tag="div" appear>
       <div class="toast" :class="toast.type" v-for="toast in toasts" :key="toast.id">
         <span class="toast__icon">
-          <TickCircleIcon v-if="toast.type === 'success'" />
-          <InfoIcon  v-if="toast.type === 'info'" />
-          <AttentionIcon v-if="toast.type === 'error'" />
+          <TickCircleIcon v-if="toast.type === ToastType.success" />
+          <InfoIcon v-if="toast.type === ToastType.info" />
+          <AttentionIcon v-if="toast.type === ToastType.error" />
         </span>
         <span class="toast__text">{{ toast.message }}</span>
       </div>
@@ -19,6 +19,7 @@ import { computed } from 'vue'
 import AttentionIcon from '@/components/icons/AttentionIcon.vue'
 import InfoIcon from '@/components/icons/InfoIcon.vue'
 import TickCircleIcon from '@/components/icons/TickCircleIcon.vue'
+import { ToastType } from '@/store_types/toasts.types.js'
 
 const toastsStore = useToastsStore()
 
