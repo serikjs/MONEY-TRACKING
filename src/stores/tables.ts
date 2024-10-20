@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import {supabase} from "@/lib/supabaseClient";
+import {supabase} from "@/lib/supabaseClient.js";
 
 export const useTablesStore = defineStore('tables', () => {
   const tables = ref( null )
@@ -10,7 +10,7 @@ export const useTablesStore = defineStore('tables', () => {
   }
 
   async function uploadTables() {
-    const { data } = await supabase.from('users-tables').select()
+    const { data }:any = await supabase.from('users-tables').select()
     setTables(data)
   }
 
