@@ -1,12 +1,8 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useAuthStore } from "@/stores/auth";
-import { useUserStore } from "@/stores/user";
 import { useTablesStore } from "@/stores/tables";
+import MainSidebar from "@/components/MainSidebar.vue";
 
-
-const authStore = useAuthStore()
-const userStore = useUserStore()
 const tablesStore = useTablesStore()
 onMounted(async () => {
   const sheet = await tablesStore.uploadSheet('1qkg77bg0AMgDfw2xj4NQ2fBRiAh2zdDu0TmGfonR8ww')
@@ -18,15 +14,24 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <nav>
-      <button v-if="authStore.getToken" @click="authStore.logout">Logout</button>
-      Menu
-    </nav>
-    <main>
-      <img v-if="userStore.getAvatar" :src="userStore.getAvatar" alt="">
+  <div class="home-page">
+    <MainSidebar/>
+    <main class="home-page__content">
       <RouterView />
     </main>
   </div>
 
 </template>
+
+<style scoped lang="scss">
+.home-page{
+  height: 100%;
+  display: grid;
+  grid-template-columns: 235px 1fr;
+  background-color: $gray-200;
+
+  &__content{
+    padding: 40px;
+  }
+}
+</style>

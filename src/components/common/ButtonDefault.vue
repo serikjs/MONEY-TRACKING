@@ -96,6 +96,28 @@ function click(){
       background-color: $brand-200;
     }
   }
+
+  &.secondary-red{
+    background-color: $error-100;
+    color: $error-700;
+    border-radius: 8px;
+    border: 2px solid transparent;
+
+    &:hover:not(:disabled,.loading){
+      background-color: $error-300;
+    }
+
+    &:focus:not(:disabled,.loading){
+      background-color: $error-300;
+      box-shadow: 0px 0px 0px 4px $shadow-primary;
+    }
+
+    &:disabled:not(.loading){
+      color: $error-300;
+      background-color: $error-50;
+      box-shadow: 0px 0px 0px 4px $shadow-primary;
+    }
+  }
 }
 
 </style>

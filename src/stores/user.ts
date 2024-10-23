@@ -20,5 +20,12 @@ export const useUserStore = defineStore('user', () => {
     return null
   })
 
-  return { getUser,getAvatar}
+  const getName= computed(() =>{
+    if(getUser.value){
+      return getUser.value.full_name
+    }
+    return null
+  })
+
+  return { getUser,getAvatar,getName}
 })

@@ -5,4 +5,9 @@
 body{
     @include set-font-family(primary);
     @include set-font-size(t-md,regular);
+    height: 100vh;
+}
+
+#app{
+    height: 100%;
 }
