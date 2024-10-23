@@ -19,7 +19,7 @@ import { computed } from 'vue'
 import AttentionIcon from '@/components/icons/AttentionIcon.vue'
 import InfoIcon from '@/components/icons/InfoIcon.vue'
 import TickCircleIcon from '@/components/icons/TickCircleIcon.vue'
-import { ToastType } from '@/store_types/toasts.types.js'
+import { ToastType } from '@/store_types/toasts.types'
 
 const toastsStore = useToastsStore()
 
