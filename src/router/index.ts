@@ -28,15 +28,20 @@ const router = createRouter({
     ]
 })
 
-router.beforeEach((to, from, next) => {
-    const authStore = useAuthStore()
-    authStore.checkLogin().then(()=>{
-        if (!authStore.getToken && to.name !== 'login') {
-            router.push("/login")
-        } else {
-            next()
-        }
-    }).catch(()=>{})
+router.beforeEach(async (to, from, next) => {
+    const authStore = useAuthStore();
 
+    await authStore.checkLogin();
+
+    if (!authStore.getToken && to.name !== 'login') {
+        return next('/login');
+    }
+    next();
+});
+
+// Временное решение прячет инфу о пользователе в url
+router.afterEach((to, from, next) => {
+        const url = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, url);
 })
 export default router
