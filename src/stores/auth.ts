@@ -1,42 +1,76 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { supabase } from '@/lib/supabaseClient.js'
+import router from '@/router'
+import type { Session } from "@supabase/supabase-js";
 
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref(null)
-  const getToken = computed(() => token.value)
+  const token = ref<string | null>(null)
+  const session = ref<Session | null>(null)
 
-  function setToken(val: any = null) {
+  const getToken = computed(() => token.value)
+  const getSession = computed(() => session.value)
+
+  function setSession(val:  Session | null = null) {
     if (val) {
+      session.value = val
       token.value = val.access_token
     } else {
       token.value = val
+      session.value = val
     }
   }
+
 
   async function checkLogin() {
-    const session = await supabase.auth.getSession()
-    if (session.data.session) {
-      setToken(session.data.session)
-    } else {
-      setToken(null)
+    try {
+      const { data, error } = await supabase.auth.getSession()
+      if (data.session) {
+        setSession(data.session)
+      } else {
+        setSession(null)
+      }
+      if (error) {
+        console.error('Ошибка получения профиля:', error)
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
     }
   }
 
-  async function login(data:any) {
+  async function loginGoogle() {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          scopes: 'https://www.googleapis.com/auth/spreadsheets'
+        }
+      })
+
+      if (error) {
+        console.error('Ошибка входа:', error)
+        return error
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+
+  async function login(data: any) {
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password
       })
-      return error
+      if (error) {
+        console.error('Ошибка входа:', error)
+      }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching data:', error)
     }
-
   }
 
-  async function register(data:any) {
+  async function register(data: any) {
     try {
       const { error } = await supabase.auth.signUp({
         email: data.email,
@@ -47,13 +81,22 @@ export const useAuthStore = defineStore('auth', () => {
           }
         }
       })
-
-      return error
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching data:', error)
     }
-
   }
 
-  return { token, getToken, setToken, checkLogin,login,register }
+  async function logout() {
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error('Ошибка выхода:', error)
+      }
+      await router.push('/')
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+
+  return { getSession, getToken, checkLogin, login, loginGoogle, register, logout }
 })
