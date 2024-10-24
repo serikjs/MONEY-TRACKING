@@ -4,6 +4,7 @@ import {useAuthStore} from "@/stores/auth";
 import HomeLayout from '@/layouts/HomeLayout.vue';
 import LoginLayout from "@/layouts/LoginLayout.vue";
 import BanksView from "@/views/BanksView.vue";
+import NotFound from "@/layouts/NotFound.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,11 @@ const router = createRouter({
             name: 'login',
             component: LoginLayout
         },
+        {
+            path: '/:pathMatch(.*)*', // Уловит все неопределённые пути
+            name: 'not-found',
+            component: NotFound
+        }
     ]
 })
 
