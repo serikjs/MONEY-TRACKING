@@ -5,10 +5,7 @@ import MainSidebar from "@/components/MainSidebar.vue";
 
 const tablesStore = useTablesStore()
 onMounted(async () => {
-  const sheet = await tablesStore.uploadSheet('1qkg77bg0AMgDfw2xj4NQ2fBRiAh2zdDu0TmGfonR8ww')
 
-  const f = await sheet.addSheet({  title: 'Доходы' ,headerValues: ['name', 'email'] });
-  console.log("f",f);
 })
 
 </script>
