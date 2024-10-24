@@ -21,7 +21,9 @@ const props = defineProps({
   loading:{
     type: Boolean,
     default: false
-  }
+  },
+  iconLeft:{type:String},
+  iconRight:{type:String},
 })
 
 function click(){
@@ -32,7 +34,9 @@ function click(){
 
 <template>
   <button class="button-default" :class="[type,size,{loading:props.loading}]" @click="click" :disabled="props.disabled || props.loading">
+    <v-icon v-if="iconLeft" :name="iconLeft" />
     {{props.text}}
+    <v-icon v-if="iconRight" :name="iconRight" />
     <LoadingIcon v-if="props.loading" :width="20" :height="20"/>
   </button>
 </template>
@@ -115,7 +119,6 @@ function click(){
     &:disabled:not(.loading){
       color: $error-300;
       background-color: $error-50;
-      box-shadow: 0px 0px 0px 4px $shadow-primary;
     }
   }
 }

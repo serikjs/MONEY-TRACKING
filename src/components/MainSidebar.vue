@@ -7,17 +7,20 @@
     <nav class="main-sidebar__menu main-nav">
       <ul class="main-nav__list">
         <li class="main-nav__item">
-          <RouterLink class="main-nav__link" to="/" :active-class="'main-nav__link_active'" exact>
+          <RouterLink class="main-nav__link" to="/" active-class="main-nav__link_active" exact-active-class="main-nav__link_exact-active" exact>
+            <v-icon name="ri-home-4-line" :scale="1.2"/>
             Домой
           </RouterLink>
         </li>
         <li class="main-nav__item">
-          <RouterLink class="main-nav__link" to="/banks" :active-class="'main-nav__link_active'" exact>
+          <RouterLink class="main-nav__link" to="/banks" active-class="main-nav__link_active" exact-active-class="main-nav__link_exact-active" exact>
+            <v-icon name="bi-clipboard-data" :scale="1.2"/>
             Вклады
           </RouterLink>
         </li>
         <li class="main-nav__item">
-          <RouterLink class="main-nav__link" to="/taxes" :active-class="'main-nav__link_active'" exact>
+          <RouterLink class="main-nav__link" to="/taxes" active-class="main-nav__link_active" exact-active-class="main-nav__link_exact-active" exact>
+            <v-icon name="bi-bank" :scale="1.2"/>
             Налоги
           </RouterLink>
         </li>
@@ -36,7 +39,8 @@
     <ButtonDefault
       class="main-sidebar__logout"
       v-if="authStore.getToken"
-      text="Logout"
+      text="Выход"
+      icon-right="md-exittoapp"
       size="md"
       type="secondary-red"
       @click-detected="authStore.logout"
@@ -103,13 +107,16 @@ const userStore = useUserStore()
 
   &__link {
     display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 12px;
     text-decoration: none;
     @include set-font-size(t-lg, medium);
     color: $gray-600;
     border-radius: 8px;
 
-    &:hover {
+    &:hover,
+    &_exact-active{
       color: $indigo-700;
       background-color: $indigo-100;
     }
