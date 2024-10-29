@@ -28,6 +28,8 @@ const goHome = ()=>{
 
 
 <style scoped lang="scss">
+@use "sass:math";
+@use "sass:list";
 
 $anims: float, floatReverse,float2, floatReverse2;
 $easeSmooth: cubic-bezier(0.39,0.575,0.28,0.995);
@@ -82,14 +84,14 @@ $easeSmooth: cubic-bezier(0.39,0.575,0.28,0.995);
 
   @for $i from 1 through 80 {
     &:nth-child(#{$i}){
-      $size: random(20) + 10;
+      $size: math.random(20) + 10;
       $blur: $i * 0.02;
-      $speed: random(20)+20;
-      $delay: random(10)*0.1;
-      $anim: nth($anims, random(length($anims)));
+      $speed: math.random(20)+20;
+      $delay: math.random(10)*0.1;
+      $anim: list.nth($anims, math.random(list.length($anims)));
 
-      top: random(100) / (100 + $size/8) * 100%;
-      left: random(100) / (100 + $size/10) * 100%;
+      top: calc(math.random(100) / calc(100 + $size/8)  * 100%);
+      left: calc(math.random(100) / calc(100 + $size/10) * 100%) ;
       font-size: $size + px;
       filter: blur( (#{$blur}) + px);
       animation: $speed+s  $anim infinite;

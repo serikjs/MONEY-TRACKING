@@ -1,3 +1,5 @@
+@use "sass:map";
+@use "sass:list";
 
 //  Начертание шрифтов
 $font-weight: (
@@ -31,12 +33,12 @@ $font-families: (
 
 
 @mixin set-font-family($family-key) {
-  font-family: map-get($font-families, $family-key);
+  font-family: map.get($font-families, $family-key);
 }
 
 @mixin set-font-size($size-key,$weight-key) {
-  $font-size: map-get($font-sizes, $size-key);
-  font-size: nth($font-size, 1);
-  line-height: nth($font-size, 2);
-  font-weight: map-get($font-weight, $weight-key);
+  $font-size: map.get($font-sizes, $size-key);
+  font-size: list.nth($font-size, 1);
+  line-height: list.nth($font-size, 2);
+  font-weight: map.get($font-weight, $weight-key);
 }

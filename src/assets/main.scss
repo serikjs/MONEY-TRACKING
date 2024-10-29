@@ -1,6 +1,6 @@
-@import 'base.scss';
-@import 'fonts.scss';
-@import 'colors.scss';
+@use 'base';
+@use 'fonts' as *;
+@use 'colors' as *;
 
 body{
     @include set-font-family(primary);

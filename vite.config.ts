@@ -18,7 +18,12 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "./src/assets/main.scss";`,
+        api:'modern',
+        additionalData: `
+          @use "@/assets/main.scss";
+          @use "@/assets/fonts.scss" as *;
+          @use "@/assets/colors.scss" as *;
+        `,
       },
     },
   },
