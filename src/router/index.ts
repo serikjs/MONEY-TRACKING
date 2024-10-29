@@ -5,6 +5,7 @@ import HomeLayout from '@/layouts/HomeLayout.vue';
 import LoginLayout from "@/layouts/LoginLayout.vue";
 import BanksView from "@/views/BanksView.vue";
 import NotFound from "@/layouts/NotFound.vue";
+import HomeView from "@/views/HomeView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,11 @@ const router = createRouter({
             name: 'home',
             component: HomeLayout,
             children: [
+                {
+                    path: '',
+                    name: 'home-view',
+                    component: HomeView
+                },
                 {
                     path: 'banks',
                     name: 'banks',
