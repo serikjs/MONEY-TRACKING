@@ -1,11 +1,15 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useTablesStore } from "@/stores/tables";
 import MainSidebar from "@/components/MainSidebar.vue";
+import { useBanksStore } from "@/stores/banks";
+import { useTablesStore } from "@/stores/tables";
 
+const banksStore = useBanksStore()
 const tablesStore = useTablesStore()
-onMounted(async () => {
 
+onMounted(async () => {
+ await banksStore.uploadBanks();
+ await tablesStore.uploadTables();
 })
 
 </script>
