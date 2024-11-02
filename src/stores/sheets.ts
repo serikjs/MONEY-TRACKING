@@ -4,11 +4,13 @@ import { supabase } from '@/lib/supabaseClient.js'
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 import { useAuthStore } from '@/stores/auth'
 import { SheetsNames } from "@/store_types/sheets.types";
+import { useTablesStore } from "@/stores/tables";
 
 export const useSheetsStore = defineStore('sheets', () => {
-  const sheets = ref(null)
+  const sheets = ref([])
 
   const authStore = useAuthStore()
+  const tablesStore = useTablesStore()
 
   async function uploadSheet(spreadsheetId: string) {
     const token = authStore.getSession?.provider_token
@@ -31,15 +33,20 @@ export const useSheetsStore = defineStore('sheets', () => {
     }
   }
 
-  async function uploadIncomeSheet(spreadsheetId: string) {
-    const sheet = await uploadSheet('1qkg77bg0AMgDfw2xj4NQ2fBRiAh2zdDu0TmGfonR8ww')
+  async function uploadIncomeSheet() {
+    if(!tablesStore.getTables.income){
+      console.error('Таблица доходов отсутствует')
+      return
+    }
+    const sheet = await uploadSheet(tablesStore.getTables.income)
     if(sheet){
-      const income = sheet.sheetsByTitle[SheetsNames.income];
-      if(income){
-        return income
-      }else{
-        const f = await sheet.addSheet({  title: SheetsNames.income, headerValues: ['name', 'email'] });
-      }
+      return sheet
+      // const income = sheet.sheetsByTitle[SheetsNames.income];
+      // if(income){
+      //   return income
+      // }else{
+      //   const f = await sheet.addSheet({  title: SheetsNames.income, headerValues: ['name', 'email'] });
+      // }
 
     }
 
