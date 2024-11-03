@@ -4,9 +4,7 @@
     </div>
     <template v-else>
       <NoTable v-if="!tablesStore.getTables.income"/>
-      <div class="no-banks" v-else-if="!banksStore.getBanks.length">
-        Банков еще нет
-      </div>
+      <NoBanks v-else-if="!banksStore.getBanks.length"/>
     </template>
 
 </template>
@@ -18,6 +16,7 @@ import NoTable from "@/components/banks/NoTable.vue";
 import { useLoadingStore } from "@/stores/loading";
 import { computed } from "vue";
 import { LoadingNames } from "@/store_types/loading.types";
+import NoBanks from "@/components/banks/NoBanks.vue";
 
 const banksStore = useBanksStore()
 const tablesStore = useTablesStore()
