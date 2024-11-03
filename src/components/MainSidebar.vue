@@ -62,7 +62,6 @@ const userStore = useUserStore()
   display: flex;
   flex-direction: column;
   height: 100%;
-  margin-left: 10px;
   padding: 20px 12px;
   background-color: $white;
   border-radius: 16px;

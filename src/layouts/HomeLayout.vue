@@ -29,10 +29,13 @@ onMounted(async () => {
   height: 100%;
   display: grid;
   grid-template-columns: 235px 1fr;
-  background-color: $gray-200;
+  background-color: $white;
 
   &__content{
-    padding: 40px;
+    margin-top: 12px;
+    border-radius: 32px 0 0 0;
+    background-color: $gray-200;
+    padding: 32px;
   }
 }
 </style>
