@@ -2,8 +2,12 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import {supabase} from "@/lib/supabaseClient.js";
 import type { Tables, TablesType } from "@/store_types/tables.types";
+import { useLoadingStore } from "@/stores/loading";
+import { LoadingNames } from "@/store_types/loading.types";
 
 export const useTablesStore = defineStore('tables', () => {
+  const loadingStore = useLoadingStore()
+
   const tables = ref<Tables>( {
     income: null,
     taxes: null,
@@ -19,6 +23,7 @@ export const useTablesStore = defineStore('tables', () => {
   }
 
   async function uploadTables() {
+    loadingStore.startLoading(LoadingNames.UPLOAD_TABLES)
     const { data:income }:any = await supabase.from('users-tables').select().eq('is_income', true)
     const { data:taxes }:any = await supabase.from('users-tables').select().eq('is_income', false)
 
@@ -29,6 +34,7 @@ export const useTablesStore = defineStore('tables', () => {
     if(taxes.length){
       setTableTaxes(taxes[0].link)
     }
+    loadingStore.stopLoading(LoadingNames.UPLOAD_TABLES)
   }
 
   async function insertTableIncome(sheetId: string) {

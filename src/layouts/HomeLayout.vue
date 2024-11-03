@@ -8,8 +8,8 @@ const banksStore = useBanksStore()
 const tablesStore = useTablesStore()
 
 onMounted(async () => {
- await banksStore.uploadBanks();
- await tablesStore.uploadTables();
+  await tablesStore.uploadTables();
+  await banksStore.uploadBanks();
 })
 
 </script>
