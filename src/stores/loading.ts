@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useLoadingStore = defineStore('loading', () => {
+
   const loadingActions = ref(new Set<string>())
 
   function startLoading(actionName: string) {
